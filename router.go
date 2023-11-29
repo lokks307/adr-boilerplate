@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/lokks307/adr-boilerplate/action"
+	"github.com/lokks307/adr-boilerplate/action/customer_action"
 	"github.com/lokks307/adr-boilerplate/env"
 	"github.com/lokks307/adr-boilerplate/middleware"
 )
@@ -19,14 +19,14 @@ var RouteMap = []Route{
 	{
 		Method:     "GET",
 		Path:       "/heartbeat",
-		Action:     action.EchoHello,
+		Action:     customer_action.EchoHello,
 		Middleware: []echo.MiddlewareFunc{},
 		DisableLog: true,
 	},
 	{
 		Method:     "GET",
 		Path:       "/customer/:customer_id",
-		Action:     action.GetCustomerInfo,
+		Action:     customer_action.GetCustomerInfo,
 		Middleware: []echo.MiddlewareFunc{},
 	},
 }
@@ -47,7 +47,9 @@ func (m *Router) Init() {
 		m.Server.Add(RouteMap[idx].Method, RouteMap[idx].Path, RouteMap[idx].Action, RouteMap[idx].Middleware...)
 	}
 
-	m.Server.Use(middleware.NewDefaultEventLogger(), middleware.LogrusLoggerMiddleware())
+	m.Server.Use(middleware.LogrusLoggerMiddleware())
+	// FIXME: 아래 미들웨어를 활성화하면 프로그램이 죽어요
+	// m.Server.Use(middleware.NewDefaultEventLogger())
 }
 
 func (m *Router) Run(addr string) error {
